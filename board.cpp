@@ -40,7 +40,7 @@ int Board::getHeight(){
     int col     The column to check
 */
 int Board::getRow(int col){
-    for(int i = getHeight() - 1; i > 0; i--){
+    for(int i = getHeight() - 1; i >= 0; i--){
         if(board[i][col] == 0){
             return i;
         }

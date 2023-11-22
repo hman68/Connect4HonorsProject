@@ -28,9 +28,9 @@ int main(){
                 cout <<"Would you like to play against a computer (Y or N)" << endl;
                 cin >> menu;
                 if(toupper(menu) == 'Y'){
-                    int player = (rand() % 2) - 2;
-                    cout << "You are playing as the " << ((player == -1) ? "yellow" : "red") <<" chips" << endl;
-                    ComputerPlay(player);
+                    int computer = (rand() % 2) - 2;
+                    cout << "You are playing as the " << ((computer != -1) ? "yellow" : "red") <<" chips" << endl;
+                    ComputerPlay(computer);
                 }else{
                     play();
                 }
@@ -42,9 +42,21 @@ int main(){
                 cout << "Please enter a width"<< endl;
                 cin >> w;
                 board = Board(h, w);
-                play();
+                
+                cout <<"Would you like to play against a computer (Y or N)" << endl;
+                cin >> menu;
+                if(toupper(menu) == 'Y'){
+                    int player = (rand() % 2) - 2;
+                    cout << "You are playing as the " << ((player != -1) ? "yellow" : "red") <<" chips" << endl;
+                    ComputerPlay(player);
+                }else{
+                    play();
+                }
                 break;
             case 'E':
+                break;
+            default:
+                cout << "Invalid Option, please try again"<<endl;
                 break;
         }
         board.clear();
@@ -68,17 +80,21 @@ void play(){
         cout  << ": please input your move (1 - " << board.getWidth() << ")" << endl;
 
         cin >> move;
-
-        if(board.place((player) ? -1 : -2, move)){
-            board.display();
-            cout <<((player) ? "Yellow" : "Red") << " Player Wins!!" << endl;
-            return;
+        if(board.getRow(move - 1) >= 0){
+            if(board.place((player) ? -1 : -2, move)){
+             board.display();
+             cout <<((player) ? "Yellow" : "Red") << " Player Wins!!" << endl;
+             return;
+            }
+            emptySpaces--;
+            player = !player;
+        }else{
+            cout << "That move is not possible, please pick another"<< endl;
         }
-        emptySpaces--;
-        player = !player;
     }
 
     if(emptySpaces == 0){
+        board.display();
         cout << "Game Tie" << endl;
         return;
     }
@@ -103,13 +119,17 @@ void ComputerPlay(int compColor){
             cout << "Player, please input your move (1 - " << board.getWidth() << ")" << endl;
 
             cin >> move;
-
-            if(board.place(comp.getPlrColor(), move)){
-                board.display();
-                cout << "The Player Wins!!" << endl;
-                return;
+            if(board.getRow(move - 1) >= 0){
+                if(board.place(comp.getPlrColor(), move)){
+                  board.display();
+                  cout << "The Player Wins!!" << endl;
+                  return;
+                }
+                isPlayerTurn = false;
+            }else{
+            cout << "That move is not possible, please pick another"<< endl;
             }
-            isPlayerTurn = false;
+
         }else{
             if(board.place(compColor, comp.SimulateMove() + 1)){
                 board.display();
